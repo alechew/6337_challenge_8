@@ -35,17 +35,42 @@ You have successfully created a DSN for the Retailer2017.accdb database
 The tools for reading data from and writing answers to the database are in pyodbcconnect.py
 PuLP is the Python LP modeling language
 """
-import pyodbcconnect
+import sqlite3
+from sqlite3 import Error
 from pulp import *
 
-database_name = "Challenge8.db"
-print "Connecting to Database"
-database = pyodbcconnect.DataBase(database_name)
 
-#=====================================================================================================
+# name of database
+database = 'challenge8-2.db'
+
+
+def create_connection(db_file):
+    """ create a database connection to the SQLite database
+        specified by the db_file
+    :param db_file: database file
+    :return: Connection object or None
+    """
+
+
+    return None
+
+
+def get_data_for_table(tablename):
+    # create a database connection
+    conn = create_connection(database)
+
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM " + tablename)
+
+    rows = cur.fetchall()
+    # returns a list of lists that contains the rows for each tables
+    for row in rows:
+        print(row)
+    return rows
+
+
+
 """
-Now let's read the data. 
-
 First, we have Store data. 
 
 We construct a query in Retailer2017.accdb that filters the stores and has the fields
@@ -61,7 +86,7 @@ store_tab = 'SelectStores'
 
 print "Reading Store data"
 # Get the store data 
-store_data = database.get_table(store_tab)
+store_data = get_data_for_table(store_tab)
 
 """ 
 Some Notes: 
@@ -112,7 +137,7 @@ terminal_tab = 'SelectTerminals'
 
 print "Reading Terminal data"
 # Get the terminal data 
-terminal_data = database.get_table(terminal_tab)
+terminal_data = get_data_for_table(terminal_tab)
 
 
 #==========================================================================================
@@ -140,9 +165,8 @@ Note: Turns out UPS doesn't serve all these ZIPs so I filtered the terminals to 
 lane_tab = 'SelectLanes'
 
 print "Reading Lane data"
-# Get the lane data 
-lane_data = database.get_table(lane_tab)
-#lane_data = database.execute_sql(sql_string, 1)
+lane_data = get_data_for_table(lane_tab)
+
 
 '''
 We can  use the where_clause to get various slices of the lane data and so organize 

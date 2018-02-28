@@ -35,42 +35,17 @@ You have successfully created a DSN for the Retailer2017.accdb database
 The tools for reading data from and writing answers to the database are in pyodbcconnect.py
 PuLP is the Python LP modeling language
 """
-import sqlite3
-from sqlite3 import Error
+import pyodbcconnect
 from pulp import *
 
+database_name = "challenge8-2.db"
+print "Connecting to Database"
+database = pyodbcconnect.DataBase(database_name)
 
-# name of database
-database = 'Challenge8.db'
-
-
-def create_connection(db_file):
-    """ create a database connection to the SQLite database
-        specified by the db_file
-    :param db_file: database file
-    :return: Connection object or None
-    """
-
-
-    return None
-
-
-def get_data_for_table(tablename):
-    # create a database connection
-    conn = create_connection(database)
-
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM " + tablename)
-
-    rows = cur.fetchall()
-    # returns a list of lists that contains the rows for each tables
-    for row in rows:
-        print(row)
-    return rows
-
-
-
+#=====================================================================================================
 """
+Now let's read the data. 
+
 First, we have Store data. 
 
 We construct a query in Retailer2017.accdb that filters the stores and has the fields
@@ -82,11 +57,11 @@ LTLDirectRate Double        Undiscounted cost per direct LTL shipment from the X
 """
 
 # The name of the Query in Retailer2017 that selects the stores
-store_tab = 'SelectStores'
+store_tab = 'Stores'
 
 print "Reading Store data"
 # Get the store data 
-store_data = get_data_for_table(store_tab)
+store_data = database.get_table(store_tab)
 
 """ 
 Some Notes: 
@@ -133,11 +108,11 @@ CrowFlies    Double        Distance from the XDock to the Terminal
 
 """
 # The name of the table holding the terminal data
-terminal_tab = 'SelectTerminals'
+terminal_tab = 'Terminals'
 
 print "Reading Terminal data"
 # Get the terminal data 
-terminal_data = get_data_for_table(terminal_tab)
+terminal_data = database.get_table(terminal_tab)
 
 
 #==========================================================================================
@@ -162,11 +137,12 @@ Note: Turns out UPS doesn't serve all these ZIPs so I filtered the terminals to 
 
 """
 # The name of the table holding the lane data
-lane_tab = 'SelectLanes'
+lane_tab = 'Lanes'
 
 print "Reading Lane data"
-lane_data = get_data_for_table(lane_tab)
-
+# Get the lane data 
+lane_data = database.get_table(lane_tab)
+#lane_data = database.execute_sql(sql_string, 1)
 
 '''
 We can  use the where_clause to get various slices of the lane data and so organize 

@@ -1,7 +1,7 @@
 import sqlite3
 from sqlite3 import Error
 
-database = "Challenge8.db"
+database = "Challenge8_Part 2.db"
 
 
 def create_connection(db_file):
